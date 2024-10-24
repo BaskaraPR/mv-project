@@ -7,13 +7,15 @@ import StepsSection from "./components/Steps";
 
 export default function Home() {
   return (
-    <div>
-      <Header />
-      <StepsSection />
-      <Hero />
-      <Recent />
-      <CategoryGrid />
+    <div className="mx-auto">
+      <div className="mx-auto max-w-[1169px] px-5">
+        <Header />
+        <StepsSection />
+        <Hero />
+        <Recent />
+        <CategoryGrid />
       <Newsletter />
+      </div>
     </div>
   );
 }
