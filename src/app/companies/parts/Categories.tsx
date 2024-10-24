@@ -1,7 +1,7 @@
 // components/CategoryGrid.tsx
 
 import { categories } from "@/lib/data"; // Import categories from lib/data
-import { CategoryCard } from "../components/CategoryCard"; // Import the CategoryCard component
+import { CategoryCard } from "../../(main)/components/CategoryCard"; // Import the CategoryCard component
 
 const CategoryGrid = () => {
   return (
