@@ -15,9 +15,6 @@ export default function Header() {
               moments notice
             </p>
             <div className="flex">
-              {/* <button className="bg-purple-600 text-white px-6 py-3 rounded-l-full font-medium hover:bg-purple-700 transition duration-300">
-                Find a company
-              </button> */}
               <div className="relative">
                 <input
                   type="text"
@@ -28,20 +25,6 @@ export default function Header() {
                   <Search className="w-5 h-5" />
                 </button>
               </div>
-
-              {/* <div className="relative flex-grow">
-                <input
-                  type="text"
-                  placeholder="search companies work"
-                  className="w-full px-4 py-3 rounded-r-full border-2 border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                />
-                <button
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  aria-label="Search"
-                >
-                  <Search className="h-5 w-5" />
-                </button>
-              </div> */}
             </div>
           </div>
           <div className="hidden md:block">

@@ -33,7 +33,8 @@ export default function Hero() {
         <h2 className="text-3xl font-semibold">
           <span className="text-purple-500">Companies</span> Here
         </h2>
-        <p className="text-gray-600">ambatukammm</p>
+        <p className="text-gray-600 max-w-[300px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut erat bibendum ornare urna, cursus eget convallis. Feugiat imperdiet posuere justo, ultrices interdum
+        sed orci nunc, mattis. Ipsum viverra viverra neque adipiscing arcu, quam dictum. Dui mi viverra dui, sit accumsan, tincidunt massa. Dui cras magnis.</p>
       </div>
     </div>
   );

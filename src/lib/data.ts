@@ -1,3 +1,5 @@
+import Account from "../../public/Account.svg"
+
 interface Company {
   icon: string;
   title: string;
@@ -7,37 +9,37 @@ interface Company {
 
 export const companies: Company[] = [
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci9iYjEzYWViNTFjNTQ0MjFhN2E1NTQwYTcxMzI4OTVkYz9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.FnWJxluT5VvnfpnQsm2K2I1GK-k0_NAmWtu3G-u3fE0",
     title: "Logo Design",
     description: "Our team is proficient in a variety of services that can help improve productivity of your company or institution.",
     highestBid: 500,
   },
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://img.freepik.com/premium-photo/canva-logo-illustration-icon_895118-4417.jpg",
     title: "Graphic Design",
     description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
     highestBid: 500,
   },
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKQPZ3SZIf-LF0J_m3kJAH03WnOrkMxLuneA&s",
     title: "Mobile Apps",
     description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
     highestBid: 300,
   },
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://www.npmjs.com/npm-avatar/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdmF0YXJVUkwiOiJodHRwczovL3MuZ3JhdmF0YXIuY29tL2F2YXRhci9iYjEzYWViNTFjNTQ0MjFhN2E1NTQwYTcxMzI4OTVkYz9zaXplPTQ5NiZkZWZhdWx0PXJldHJvIn0.FnWJxluT5VvnfpnQsm2K2I1GK-k0_NAmWtu3G-u3fE0",
     title: "Logo Design",
     description: "Our team is proficient in a variety of services that can help improve productivity of your company or institution.",
     highestBid: 500,
   },
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://img.freepik.com/premium-photo/canva-logo-illustration-icon_895118-4417.jpg",
     title: "Graphic Design",
     description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
     highestBid: 500,
   },
   {
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKQPZ3SZIf-LF0J_m3kJAH03WnOrkMxLuneA&s",
     title: "Need a SEO",
     description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
     highestBid: 300,
@@ -45,27 +47,27 @@ export const companies: Company[] = [
 ];
 
 export const services = [
-      {
-        icon: "/placeholder.svg?height=48&width=48",
-        title: "Logo Design",
-        description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
-        highestBid: 500,
-        borderStyle: "left" as const,
-      },
-      {
-        icon: "/placeholder.svg?height=48&width=48",
-        title: "Graphic Design",
-        description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
-        highestBid: 500,
-        borderStyle: "full" as const,
-      },
-      {
-        icon: "/placeholder.svg?height=48&width=48",
-        title: "Mobile App",
-        description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
-        highestBid: 300,
-        borderStyle: "right" as const,
-      },
+  {
+    icon: "https://img.freepik.com/premium-vector/abstract-geometric-company-logo-ring-circle_205544-12792.jpg?w=826",
+    title: "Logo Design",
+    description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
+    highestBid: 500,
+    borderStyle: "left" as const,
+  },
+  {
+    icon: "https://img.freepik.com/premium-vector/design-vektor-graphick-logo-business-finance-modern-with-arrow-chart_405828-178.jpg?w=740",
+    title: "Graphic Design",
+    description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
+    highestBid: 500,
+    borderStyle: "full" as const,
+  },
+  {
+    icon: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKQPZ3SZIf-LF0J_m3kJAH03WnOrkMxLuneA&s",
+    title: "Mobile App",
+    description: "With our ability to produce websites, mobile apps and ios apps we will help solve your problem with good and useful products.",
+    highestBid: 300,
+    borderStyle: "right" as const,
+  },
 ];
 
 export const categories = [
