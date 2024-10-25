@@ -9,7 +9,7 @@ interface Tags {
 
 export default async function UsersPage() {
   try {
-    const data = await directus.request(readItems("company_tags"));
+    const data = await directus.request<Tags[]>(readItems("company_tags"));
 
     return (
       <div>

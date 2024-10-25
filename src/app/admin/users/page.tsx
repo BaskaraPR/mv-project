@@ -1,4 +1,3 @@
-// src/app/admin/users/page.tsx
 import directus from "@/lib/directus";
 import { readItems } from "@directus/sdk";
 
@@ -10,15 +9,14 @@ interface User {
 
 export default async function UsersPage() {
   try {
-
-    const  data  = await directus.request(readItems("user_kel_bagas"));
+    const data = await directus.request<User[]>(readItems("user_kel_bagas"));
 
     return (
       <div>
         <h1>Users</h1>
         {data && data.length > 0 ? (
           <ul>
-            {data.map((user: User) => (
+            {data.map((user) => (
               <li key={user.id}>
                 <p>Name: {user.username}</p>
                 <p>Email: {user.email}</p>
