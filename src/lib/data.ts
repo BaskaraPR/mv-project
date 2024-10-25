@@ -1,4 +1,4 @@
-import Account from "../../public/Account.svg"
+
 
 interface Company {
   icon: string;
