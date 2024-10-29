@@ -21,9 +21,10 @@ export default function FindCompanies() {
 					Find <span className="text-purple-600">Companies</span>
 				</h1>
 				<div className="flex flex-wrap justify-center gap-8">
-					{data.map((data: Company, index: number) => (
-						<Card key={index} CompanyData={data} />
-					))}
+					{data &&
+						data.map((data: Company, index: number) => (
+							<Card key={index} CompanyData={data} />
+						))}
 				</div>
 			</div>
 		</section>
