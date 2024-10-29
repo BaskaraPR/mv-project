@@ -23,7 +23,17 @@ export const getCompanies = async (dataPerPage: number, page: number) => {
 	}
 };
 
-export const findCompanies = async (keyword: string) => {};
+export const findCompaniesById = async (id: string) => {
+	try {
+		const response = await axios.get(
+			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations?filter[id][_eq]=${id}`,
+			axiosConfig
+		);
+		return response.data.data[0];
+	} catch (error) {
+		throw new Error(`Error fetching data from Directus: ${error}`);
+	}
+};
 export const getCompanyTags = async (companyId: string) => {
 	try {
 		const response = await axios.get(

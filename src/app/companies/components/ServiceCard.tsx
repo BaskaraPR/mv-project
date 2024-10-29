@@ -1,37 +1,41 @@
 import Image from "next/image";
-
-interface ServiceCardProps {
-  icon: string;
-  title: string;
-  description: string;
-  highestBid: number;
-}
-
-const ServiceCard: React.FC<ServiceCardProps> = ({
-  icon,
-  title,
-  description,
-  highestBid,
-}) => {
-  return (
-    <div
-      className="w-[341px] h-[400px] p-[20px] bg-white rounded-tl-[30px] 
-      shadow-lg gap-[22px] flex flex-col rounded-sm border border-gray-200"
-    >
-      <Image src={icon} alt={title} width={48} height={48} />
-      <h3 className="text-xl font-semibold">{title}</h3>
-      <p className="text-gray-600 flex-grow">{description}</p>
-      <div className="flex justify-between items-center mt-4">
-        <div>
-          <span className="text-sm text-gray-500">Highest bid</span>
-          <p className="font-semibold">${highestBid}</p>
-        </div>
-        <a href="#" className="text-purple-600 hover:underline">
-          Request now
-        </a>
-      </div>
-    </div>
-  );
+import { Company } from "@/app/types/companies";
+import Link from "next/link";
+const ServiceCard = ({ CompanyData }: { CompanyData: Company }) => {
+	return (
+		<div
+			className="w-[341px] p-[20px] bg-white rounded-tl-[30px] 
+      shadow-lg gap-[22px] flex flex-col rounded-sm border border-gray-200 text-center"
+		>
+			<div className="w-full flex justify-center">
+				<div className="w-28 h-28">
+					{CompanyData && (
+						<Image
+							src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${CompanyData.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
+							alt={CompanyData.company_name}
+							width={112}
+							height={112}
+							className="object-cover w-full h-full mb-4"
+						/>
+					)}
+				</div>
+			</div>
+			{CompanyData && (
+				<>
+					<h3 className="text-xl font-semibold">{CompanyData.company_name}</h3>
+					<p className="text-gray-600 ">{CompanyData.description}</p>
+					<div className="flex justify-center items-center mt-4">
+						<Link
+							href={`/companies/explore/${CompanyData.id}`}
+							className="text-purple-600 hover:underline"
+						>
+							Request now
+						</Link>
+					</div>
+				</>
+			)}
+		</div>
+	);
 };
 
 export default ServiceCard;
