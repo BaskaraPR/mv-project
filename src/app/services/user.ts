@@ -1,7 +1,8 @@
 "use server";
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import { axiosConfig } from "../helper/token";
-import { json } from "stream/consumers";
+import { encrypt } from "../helper/bcrypt";
 
 interface registerUser {
 	username: string;
@@ -51,27 +52,22 @@ export const findUserByEmail = async (email: string) => {
 		const response = await axios.get(findURL, axiosConfig);
 		return response.data.data;
 	} catch (error) {
-		throw new Error(`Error fetching data from Directus: ${error}`);
+		return { success: false, message: `error finding user ${error}` };
 	}
 };
 
 export const registerUser = async (data: registerUser) => {
 	try {
-		const doesUserExist = await findUserByEmail(data.email);
-
-		if (doesUserExist.length > 0) {
-			return {
-				success: false,
-				message: "user already exist",
-				data: doesUserExist,
-			};
-		}
+		const hashedPass = await encrypt(data.password);
 		const postURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/user_kel_bagas`;
-		const result = await axios.post(postURL, data, axiosConfig);
-		console.log(postURL);
-
-		return result;
+		await axios.post(
+			postURL,
+			{ password: hashedPass, username: data.username, email: data.email },
+			axiosConfig
+		);
+		revalidatePath("/", "layout");
+		return { success: true, message: `register success` };
 	} catch (error) {
-		throw new Error(` ${error}`);
+		return { success: false, message: `register failed ${error}` };
 	}
 };

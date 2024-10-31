@@ -5,19 +5,35 @@ import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { registerUser, findUserByEmail } from "@/app/services/user";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 
+type RegisterUserData = {
+	username: string;
+	email: string;
+	password: string;
+};
 export default function SignupForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
-	const handleRegister = async (e: React.FormEvent) => {
-		e.preventDefault();
+	const mutation = useMutation({
+		mutationFn: registerUser,
+		mutationKey: ["registerUser"],
+		onSuccess: (data) => {
+			console.log("User registered successfully:", data);
+		},
+		onError: (error) => {
+			console.error("Error registering user:", error);
+		},
+	});
 
-		const result = await registerUser({ username, email, password });
-		console.log(result);
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const userData: RegisterUserData = { username, email, password };
+		mutation.mutate(userData);
 	};
 
 	const togglePasswordVisibility = () => {
@@ -31,7 +47,7 @@ export default function SignupForm() {
 				Create an account to unlock exclusive features.
 			</p>
 
-			<form onSubmit={handleRegister}>
+			<form onSubmit={handleSubmit}>
 				<div className="mb-4">
 					<label
 						htmlFor="name"
