@@ -30,8 +30,12 @@ export default function SignupForm() {
 		},
 	});
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		const doesUserExist = await findUserByEmail(email);
+		if (doesUserExist.length > 0) {
+			return alert("User already exists");
+		}
 		const userData: RegisterUserData = { username, email, password };
 		mutation.mutate(userData);
 	};
