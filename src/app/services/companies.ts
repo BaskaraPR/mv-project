@@ -5,7 +5,6 @@ export const getCompanies = async (dataPerPage: number, page: number) => {
 	try {
 		const limit = dataPerPage;
 		const offset = (page - 1) * dataPerPage;
-
 		const response = await axios.get(
 			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations`,
 			{
