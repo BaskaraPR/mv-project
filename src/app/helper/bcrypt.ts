@@ -1,3 +1,4 @@
+"use server";
 import { compare, hash } from "bcrypt";
 
 const BCRYPT_ROUNDS = 3;
