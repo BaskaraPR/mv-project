@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Providers from "@/redux/Provider";
 import { store } from "../redux/store";
 import ReactQueryProvider from "@/lib/react-query/ReactQueryProvider";
+import { NextAuthProvider } from "./(main)/components/NextAuthProvider";
 
 import "./globals.css";
 
@@ -32,9 +33,11 @@ export default function RootLayout({
 	return (
 		<html lang="en" className="scroll-smooth">
 			<body>
-				<Providers store={store}>
-					<ReactQueryProvider>{children}</ReactQueryProvider>
-				</Providers>
+				<NextAuthProvider>
+					<Providers store={store}>
+						<ReactQueryProvider>{children}</ReactQueryProvider>
+					</Providers>
+				</NextAuthProvider>
 			</body>
 		</html>
 	);

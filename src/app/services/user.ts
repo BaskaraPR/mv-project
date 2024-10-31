@@ -50,7 +50,7 @@ export const findUserByEmail = async (email: string) => {
 	try {
 		const findURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/user_kel_bagas?filter[_and][0][email][_eq]=${email}`;
 		const response = await axios.get(findURL, axiosConfig);
-		return response.data.data;
+		return response.data.data[0];
 	} catch (error) {
 		return { success: false, message: `error finding user ${error}` };
 	}
