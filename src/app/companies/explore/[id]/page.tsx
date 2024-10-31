@@ -1,58 +1,184 @@
 "use client";
+import ServiceCard from "../../components/ServiceCard";
 import { useQuery } from "@tanstack/react-query";
-import { findCompaniesById } from "@/app/services/companies";
-import CompanySection from "../components/CompanySection";
+import { getCompanies, findCompaniesById } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
 import Image from "next/image";
-export default function ExplorePageCompany({
-	params,
-}: {
-	params: { id: string };
-}) {
-	const { data, isLoading, error } = useQuery<Company>({
-		queryKey: ["company_data", params.id],
-		queryFn: () => findCompaniesById(params.id),
-	});
+import { Star, Check, ArrowLeft, ArrowRight, MapPin, Clock, RefreshCcw, Users } from "lucide-react";
+import { Button } from "../../../(main)/components/button";
 
-	if (isLoading) return <p>Loading...</p>;
-	if (error) return <p>Error: {error.message}</p>;
-	return (
-		<div className="max-w-[1369px] container mx-auto p-4 mt-16">
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<CompanySection />
-				<div className="md:col-span-2">
-					<div className="bg-white rounded-lg shadow-md p-6">
-						<div className="flex flex-col items-center mb-2">
-							<div className="w-full flex justify-center">
-								<div className="w-28 h-28">
-									{data && (
-										<Image
-											src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${data.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
-											alt={data.company_name}
-											width={112}
-											height={112}
-											className="object-cover w-full h-full mb-4"
-										/>
-									)}
-								</div>
-							</div>
-							<h2 className="text-xl font-semibold">
-								{data && data.company_name}
-							</h2>
-						</div>
-						<div className="flex items-center mb-4">
-							<span className="ml-1 text-sm font-semibold">
-								{data?.company_website}
-							</span>
-						</div>
-						<p className="text-sm mb-2 my-2">{data?.description}</p>
+export default function ExplorePage({ params }: { params: { id: string } }) {
+  const { data: companies, isLoading: companiesLoading } = useQuery({
+    queryKey: ["company_data"],
+    queryFn: () => getCompanies(10, 1),
+  });
 
-						<button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-							Request Now
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+  const { data: selectedCompany, isLoading: companyLoading } = useQuery({
+    queryKey: ["company_detail", params.id],
+    queryFn: () => findCompaniesById(params.id),
+  });
+
+  if (companiesLoading || companyLoading) return <p>Loading...</p>;
+
+  return (
+    <div className="max-w-[1369px] container mx-auto p-4 mt-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Left Side - Service Cards */}
+        <div className="max-h-[800px] overflow-y-auto">
+          <div className="space-y-6">
+            {companies && companies.map((company: Company, index: number) => (
+              <ServiceCard key={index} CompanyData={company} />
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side - Company Details */}
+        <div className="md:col-span-2">
+          {selectedCompany ? (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              {/* Company Header */}
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-black text-white text-xs px-2 py-1 rounded">NEW HERE</span>
+                    <h1 className="text-2xl font-bold">{selectedCompany.company_name}</h1>
+                  </div>
+                  <h2 className="text-gray-600 mb-4">{selectedCompany.company_subtitle}</h2>
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span>4.0</span>
+                      <span className="text-purple-600 hover:underline cursor-pointer">(20 reviews)</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      <span>East Java, Indonesia</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4 text-gray-600" />
+                      <span className="text-sm">3-day delivery</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <RefreshCcw className="w-4 h-4 text-gray-600" />
+                      <span className="text-sm">2 Revisions</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* What's Included Section */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold mb-4">What's Included</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    "2 concepts included",
+                    "Logo transparency",
+                    "Printable file",
+                    "Include source file",
+                    "Vector file",
+                    "Include 3D mockup"
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pricing Section */}
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <span className="text-sm text-gray-600">From</span>
+                  <p className="text-2xl font-bold">$200</p>
+                </div>
+                <Button variant="primary">Request Now</Button>
+              </div>
+
+              {/* Reviews Section */}
+              <div className="mb-8">
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-200" />
+                      <div>
+                        <p className="font-semibold">Lawrence</p>
+                        <div className="flex">
+                          {Array(4).fill(null).map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          ))}
+                          <Star className="w-4 h-4 text-gray-300" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="p-2 rounded-full hover:bg-gray-200">
+                        <ArrowLeft className="w-4 h-4" />
+                      </button>
+                      <button className="p-2 rounded-full hover:bg-gray-200">
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm">
+                    The final logo design lacked creativity and fell short of my expectations, mainly due to a weak understanding of my needs and a minimal level of effort. While everything came together in the end, I expected more from this provider.
+                  </p>
+                </div>
+              </div>
+
+              {/* Company Profile Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Company profile</h3>
+                <div className="flex items-start gap-4 mb-4">
+                  <Image
+                    src={selectedCompany.company_image ? 
+                      `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${selectedCompany.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}` :
+                      "/placeholder.svg?height=64&width=64"}
+                    alt={selectedCompany.company_name}
+                    width={64}
+                    height={64}
+                    className="rounded-lg"
+                  />
+                  <div>
+                    <h4 className="font-semibold">{selectedCompany.company_name}</h4>
+                    <p className="text-gray-600">{selectedCompany.company_subtitle}</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-gray-100 rounded-lg">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm">Digital Creative</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-gray-100 rounded-lg">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm">15 crew</span>
+                  </div>
+                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {selectedCompany.description}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex flex-col space-y-8 mb-2">
+                <h2 className="text-xl font-semibold">{"<"} Choose Company</h2>
+                <span className="text-sm text-gray-600">
+                  Select a company from the list to view details
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
