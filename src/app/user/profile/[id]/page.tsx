@@ -1,5 +1,3 @@
-// Profile.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -9,8 +7,8 @@ import { User } from "@/app/types/user";
 import { stringifyCompleteDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import EditProfileModal from "./updateModal";
-
+import EditProfileModal from "./components/updateModal";
+import ImageModal from "./components/imgModal";
 
 export default function Profile({ params }: { params: { id: string } }) {
   const { data, isLoading, error, refetch } = useQuery<User>({
@@ -19,9 +17,13 @@ export default function Profile({ params }: { params: { id: string } }) {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(true);
+  };
+  const handleImgClick = () => {
+    setIsImageModalOpen(true);
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -62,10 +64,13 @@ export default function Profile({ params }: { params: { id: string } }) {
             <div>
               <p className="text-sm text-gray-500">Profile picture</p>
               <p className="text-sm">
-                Add a profile picture to personalize your account
+                Click on the picture to view a larger image
               </p>
             </div>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center cursor-pointer"
+              onClick={handleImgClick}
+            >
               <Image
                 src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${data.profile_picture}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
                 alt={data.username || " "}
@@ -114,12 +119,19 @@ export default function Profile({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* Render the Edit Modal */}
       {isEditing && (
         <EditProfileModal
           user={data}
           userId={params.id}
           onClose={() => setIsEditing(false)}
+          onUpdate={refetch}
+        />
+      )}
+
+      {isImageModalOpen && (
+        <ImageModal
+          onClose={() => setIsImageModalOpen(false)}
+          userId={params.id}
           onUpdate={refetch}
         />
       )}

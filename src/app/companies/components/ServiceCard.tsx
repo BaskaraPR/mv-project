@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getCompanyTags } from "@/app/services/companies";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../(main)/components/button";
+import { Tags } from "@/app/types/tags";
 
 const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
   // Avoid querying if CompanyData is undefined
@@ -62,7 +63,7 @@ const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 mt-2">
-            {tags.map((tag) => (
+            {tags.map((tag : Tags) => (
               <span
                 key={tag.id}
                 className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
@@ -83,7 +84,7 @@ const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
               variant="tertiary"
               className="text-purple-600 bg-white hover:bg-violet-100 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
             >
-              Request now
+              See Details
             </Button>
           </Link>
         </div>
