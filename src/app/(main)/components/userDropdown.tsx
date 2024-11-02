@@ -7,20 +7,17 @@ import Link from "next/link";
 export default function UserDropdown({ user }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const dropdownRef = useRef(null);
-
 	useEffect(() => {
 		function handleClickOutside(event: any) {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
 				setIsOpen(false);
 			}
 		}
-
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
-
 	return (
 		<div className="relative" ref={dropdownRef}>
 			<button

@@ -15,21 +15,21 @@ export default function Header() {
               Find a company, Fast. TaskNest helps you find elite companies at a
               moments notice
             </p>
-            <div className="flex">
-              <button className="bg-purple-600 text-white px-6 py-3 rounded-l-full font-medium hover:bg-purple-700 transition duration-300">
-                Find a company
-              </button>
-              <div className="relative flex-grow">
-                <input
-                  type="text"
-                  placeholder="search companies work"
-                  className="w-full px-4 py-3 rounded-r-full border-2 border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                />
-                <button
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  aria-label="Search"
-                >
-                  <Search className="h-5 w-5" />
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center pt-6 pr-1">
+          <button className="bg-purple-600 text-white px-8 py-3 rounded-full font-medium hover:bg-purple-700 transition duration-300 whitespace-nowrap">
+            Hire a freelancer
+          </button>
+          <div className="relative w-full max-w-xl">
+            <input
+              type="text"
+              placeholder="search company"
+              className="w-full px-6 py-3 pr-12 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+            <button
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-purple-600 text-white p-2 rounded-full hover:bg-purple-700 transition duration-300"
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5" />
                 </button>
               </div>
             </div>

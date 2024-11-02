@@ -4,6 +4,8 @@ import Card from "../components/Card";
 import { useQuery } from "@tanstack/react-query";
 import { getCompanies } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
+import { Button } from "@/app/(main)/components/button";
+import Link from "next/link";
 export default function FindCompanies() {
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["company_data"],
@@ -26,6 +28,11 @@ export default function FindCompanies() {
 							<Card key={index} CompanyData={data} />
 						))}
 				</div>
+				<Link href="/companies/explore">
+				<div className="text-center pt-9">
+				<Button variant="primary">Find More</Button>
+				</div>
+				</Link>
 			</div>
 		</section>
 	);
