@@ -5,6 +5,7 @@ import UserDropdown from "./userDropdown";
 import { ChevronDown } from "lucide-react";
 import Link2 from "@/app/(main)/components/button";
 import logo from "@/../public/logo/image.png";
+import { FaUserCircle } from "react-icons/fa";
 import { nextGetServerSession } from "@/lib/next-auth";
 export default async function Navbar() {
 	const session = await nextGetServerSession();

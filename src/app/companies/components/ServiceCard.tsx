@@ -6,23 +6,37 @@ import { getCompanyTags } from "@/app/services/companies";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../(main)/components/button";
 
-const ServiceCard = ({ CompanyData }: { CompanyData: Company }) => {
+const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
+  // Avoid querying if CompanyData is undefined
   const { data: tags, isLoading, error } = useQuery({
-    queryKey: ["company_tags", CompanyData.id],
-    queryFn: () => getCompanyTags(CompanyData.id),
+    queryKey: ["company_tags", CompanyData?.id],
+    queryFn: () => getCompanyTags(CompanyData?.id!),
+    enabled: !!CompanyData,  // Only run query if CompanyData exists
   });
 
-  if (isLoading) return (
-    <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
-      Loading...
-    </div>
-  );
-  
-  if (error) return (
-    <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
-      Error: {error.message}
-    </div>
-  );
+  if (!CompanyData) {
+    return (
+      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
+        No company data available.
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
+        Error: {error.message}
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-6 rounded-[30px] shadow-lg w-[341px] h-[393px] relative">
