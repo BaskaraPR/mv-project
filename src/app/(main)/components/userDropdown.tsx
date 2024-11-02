@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 export default function UserDropdown({ user }) {
 	const [isOpen, setIsOpen] = useState(false);
@@ -45,16 +46,20 @@ export default function UserDropdown({ user }) {
 						aria-orientation="vertical"
 						aria-labelledby="options-menu"
 					>
-						{["Profile", "Your Company"].map((option) => (
-							<a
-								key={option}
-								href="#"
-								className="block px-3 py-2 text-sm text-black hover:bg-transparent hover:text-purple-500 transition duration-150 ease-in-out"
-								role="menuitem"
-							>
-								{option}
-							</a>
-						))}
+						<Link
+							href={`/user/profile/${user.id}`}
+							className="block px-3 py-2 text-sm text-black hover:bg-transparent hover:text-purple-500 transition duration-150 ease-in-out"
+							role="menuitem"
+						>
+							Profile
+						</Link>
+						<Link
+							href="/company"
+							className="block px-3 py-2 text-sm text-black hover:bg-transparent hover:text-purple-500 transition duration-150 ease-in-out"
+							role="menuitem"
+						>
+							Your Company
+						</Link>
 					</div>
 				</div>
 			)}
