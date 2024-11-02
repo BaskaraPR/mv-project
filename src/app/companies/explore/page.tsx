@@ -3,6 +3,7 @@ import ServiceCard from "../components/ServiceCard";
 import { useQuery } from "@tanstack/react-query";
 import { getCompanies } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
+
 export default function ExplorePage() {
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["company_data"],
@@ -11,6 +12,7 @@ export default function ExplorePage() {
 
 	if (isLoading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error.message}</p>;
+
 	return (
 		<div className="max-w-[1369px] container mx-auto p-4 mt-16">
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
