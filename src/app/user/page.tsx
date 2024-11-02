@@ -2,6 +2,7 @@ import { ArrowLeft, User } from "lucide-react";
 import Link from "../(main)/components/button";
 import { nextGetServerSession } from "@/lib/next-auth";
 import Logoutbutton from "../(main)/components/logoutbutton";
+import Image from "next/image";
 
 export default async function UserMenu() {
   const session = await nextGetServerSession();
@@ -19,9 +20,21 @@ export default async function UserMenu() {
         </Link>
 
         <div className="flex flex-col items-center mt-8 mb-6">
-          <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mb-3">
-            <User className="h-8 w-8 text-white" />
-          </div>
+          {session?.user?.image ? (
+            <div className="w-16 h-16 rounded-full overflow-hidden mb-3">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${session.user.image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
+                alt={username || ""}
+                width={64}
+                height={64}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          ) : (
+            <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mb-3">
+              <User className="h-8 w-8 text-white" />
+            </div>
+          )}
           <h2 className="text-xl font-semibold">{username}</h2>
           <p className="text-sm text-muted-foreground">{email}</p>
         </div>

@@ -5,7 +5,6 @@ import UserDropdown from "./userDropdown";
 import { ChevronDown } from "lucide-react";
 import Link2 from "@/app/(main)/components/button";
 import logo from "@/../public/logo/image.png";
-import { FaUserCircle } from "react-icons/fa";
 import { nextGetServerSession } from "@/lib/next-auth";
 export default async function Navbar() {
 	const session = await nextGetServerSession();
@@ -26,7 +25,7 @@ export default async function Navbar() {
 				<Link href="/" className="text-gray-600 hover:text-gray-900">
 					Home
 				</Link>
-				<Link href="companies" className="text-gray-600 hover:text-gray-900">
+				<Link href="/companies" className="text-gray-600 hover:text-gray-900">
 					Companies
 				</Link>
 				<div className="relative">
