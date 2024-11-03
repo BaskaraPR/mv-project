@@ -66,24 +66,24 @@ export default function CompanyForm({
 							<Image
 								src={imagePreview}
 								alt="preview"
-								width={400}
-								height={400}
+								width={1000}
+								height={1000}
 								className="w-full h-full object-cover"
 							/>
 						) : updateData?.company_image ? (
 							<Image
 								src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${updateData.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
 								alt={updateData.company_name}
-								width={400}
-								height={400}
+								width={1000}
+								height={1000}
 								className="w-full h-full object-cover"
 							/>
 						) : (
 							<Image
 								src={NoImg}
 								alt="preview"
-								width={400}
-								height={400}
+								width={1000}
+								height={1000}
 								className="w-full h-full object-cover"
 							/>
 						)}
@@ -147,13 +147,12 @@ export default function CompanyForm({
 							>
 								Description
 							</label>
-							<input
-								type="text"
+							<textarea
 								id="description"
 								name="description"
 								value={description}
 								onChange={(e) => setDescription(e.target.value)}
-								className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+								className="mt-1  block w-full h-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none focus:outline-none focus:ring-purple-500 focus:border-purple-500 flex-grow"
 								required
 							/>
 						</div>

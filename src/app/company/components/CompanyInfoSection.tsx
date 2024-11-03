@@ -54,7 +54,7 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 					<div className="flex flex-col justify-between">
 						<div>
 							<h1 className="text-2xl font-bold">{company.company_name}</h1>
-							<span className="mt-2">{company.description}</span>
+							<span className="mt-2 text-wrap">{company.description}</span>
 						</div>
 						{tags && tags.length > 0 ? (
 							<div className="flex flex-wrap justify-center gap-2 mt-2">
