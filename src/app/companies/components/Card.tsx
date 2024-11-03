@@ -5,24 +5,32 @@ import React from "react";
 import { getCompanyTags } from "@/app/services/companies";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../(main)/components/button";
+import { Tags } from "@/app/types/tags";
+import Link from "next/link";
 
 const Card = ({ CompanyData }: { CompanyData: Company }) => {
-  const { data: tags, isLoading, error } = useQuery({
+  const {
+    data: tags,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["company_tags", CompanyData.id],
     queryFn: () => getCompanyTags(CompanyData.id),
   });
 
-  if (isLoading) return (
-    <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-      Loading...
-    </div>
-  );
-  
-  if (error) return (
-    <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-      Error: {error.message}
-    </div>
-  );
+  if (isLoading)
+    return (
+      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
+        Loading...
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
+        Error: {error.message}
+      </div>
+    );
 
   return (
     <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] relative">
@@ -42,13 +50,15 @@ const Card = ({ CompanyData }: { CompanyData: Company }) => {
         </div>
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold mb-2">{CompanyData.company_name}</h3>
+          <h3 className="text-xl font-semibold mb-2">
+            {CompanyData.company_name}
+          </h3>
           <p className="text-gray-600 text-sm">{CompanyData.description}</p>
         </div>
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2">
-            {tags.map((tag) => (
+            {tags.map((tag: Tags) => (
               <span
                 key={tag.id}
                 className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
@@ -64,13 +74,14 @@ const Card = ({ CompanyData }: { CompanyData: Company }) => {
             <span className="text-sm text-gray-500 block">Highest bid</span>
             <span className="font-semibold">$500</span>
           </div>
-          <Button
-            variant="tertiary"
-            className="text-purple-600 bg-white hover:bg-violet-100 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
-            onClick={() => {/* Handle request action */}}
-          >
-            Request now
-          </Button>
+          <Link href={`/companies/explore/${CompanyData.id}`}>
+            <Button
+              variant="tertiary"
+              className="text-purple-600 bg-white hover:bg-violet-100 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
+            >
+              See More
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
