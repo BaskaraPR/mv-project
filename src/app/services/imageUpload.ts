@@ -15,3 +15,15 @@ export const uploadImage = async (file: File) => {
 		return { success: false, message: `Error uploading image: ${error}` };
 	}
 };
+
+export const deleteImage = async (assetId: string) => {
+	try {
+		await axios.delete(
+			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/files/${assetId}`,
+			axiosConfig
+		);
+		return { success: true };
+	} catch (error) {
+		return { success: false, message: `Error deleting image: ${error}` };
+	}
+};
