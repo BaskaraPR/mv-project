@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { createCompany } from "@/app/services/companies";
-import { useMutation } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
 import NoImg from "@/../public/noimage.jpg";
+
 import Image from "next/image";
-export default function CompanyForm() {
+export default function CompanyForm({
+	submitAction,
+}: {
+	submitAction: (formData: FormData) => void;
+}) {
 	const { data } = useSession();
 	const [name, setName] = useState("");
 	const [website, setWebsite] = useState("");
@@ -29,18 +31,6 @@ export default function CompanyForm() {
 		}
 	};
 
-	const mutation = useMutation({
-		mutationFn: createCompany,
-		mutationKey: ["register_company_field"],
-		onSuccess: (data) => {
-			console.log("company registered successfully:", data);
-			redirect("/company");
-		},
-		onError: (error) => {
-			console.error("Error registering company:", error);
-		},
-	});
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const formData = new FormData();
@@ -49,7 +39,10 @@ export default function CompanyForm() {
 		formData.append("description", description);
 		formData.append("contact_person", data?.user?.id ?? "");
 		if (file) formData.append("image", file);
-		mutation.mutate(formData);
+		if (submitAction) {
+			console.log("submitting");
+			submitAction(formData);
+		}
 	};
 
 	return (
