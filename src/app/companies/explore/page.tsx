@@ -3,6 +3,7 @@ import ServiceCard from "../components/ServiceCard";
 import { useQuery } from "@tanstack/react-query";
 import { getCompanies } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ExplorePage() {
 	const { data, isLoading, error } = useQuery({
@@ -10,7 +11,11 @@ export default function ExplorePage() {
 		queryFn: () => getCompanies(10, 1),
 	});
 
-	if (isLoading) return <p>Loading...</p>;
+	if (isLoading) return (
+		<div className="flex justify-center items-center h-screen">
+		  <LoadingSpinner size="large" />
+		</div>
+	  );
 	if (error) return <p>Error: {error.message}</p>;
 
 	return (

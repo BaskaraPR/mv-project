@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCompanies } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
 import { Button } from "@/app/(main)/components/button";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from "next/link";
 export default function FindCompanies() {
 	const { data, isLoading, error } = useQuery({
@@ -12,7 +13,11 @@ export default function FindCompanies() {
 		queryFn: () => getCompanies(10, 1),
 	});
 
-	if (isLoading) return <p>Loading...</p>;
+	if (isLoading) return (
+		<div className="flex justify-center items-center h-screen">
+		  <LoadingSpinner size="large" />
+		</div>
+	  );
 	if (error) return <p>Error: {error.message}</p>;
 
 	return (

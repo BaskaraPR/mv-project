@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 import Image from "next/image";
 import { Company } from "@/app/types/companies";
 import Link from "next/link";
@@ -6,35 +7,31 @@ import { getCompanyTags } from "@/app/services/companies";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../(main)/components/button";
 import { Tags } from "@/app/types/tags";
+import ServiceCardSkeleton from "./ServiceCardSkeleton";
 
-const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
-  // Avoid querying if CompanyData is undefined
+interface ServiceCardProps {
+  CompanyData?: Company;
+}
+
+const ServiceCard: React.FC<ServiceCardProps> = ({ CompanyData }) => {
   const { data: tags, isLoading, error } = useQuery({
     queryKey: ["company_tags", CompanyData?.id],
-    queryFn: () => getCompanyTags(CompanyData?.id!),
-    enabled: !!CompanyData,  // Only run query if CompanyData exists
+    queryFn: () => CompanyData ? getCompanyTags(CompanyData.id) : Promise.resolve([]),
+    enabled: !!CompanyData,
   });
 
   if (!CompanyData) {
-    return (
-      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
-        No company data available.
-      </div>
-    );
+    return <ServiceCardSkeleton />;
   }
 
   if (isLoading) {
-    return (
-      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <ServiceCardSkeleton />;
   }
 
   if (error) {
     return (
       <div className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] flex items-center justify-center">
-        Error: {error.message}
+        <p className="text-red-500">Error: {(error as Error).message}</p>
       </div>
     );
   }
@@ -63,7 +60,7 @@ const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 mt-2">
-            {tags.map((tag : Tags) => (
+            {tags.map((tag: Tags) => (
               <span
                 key={tag.id}
                 className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
@@ -92,5 +89,6 @@ const ServiceCard = ({ CompanyData }: { CompanyData?: Company }) => {
     </div>
   );
 };
+
 
 export default ServiceCard;

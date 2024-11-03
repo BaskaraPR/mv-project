@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../(main)/components/button";
 import { Tags } from "@/app/types/tags";
 import Link from "next/link";
+import CardSkeleton from "./CardSkeleton";
 
 const Card = ({ CompanyData }: { CompanyData: Company }) => {
   const {
@@ -18,19 +19,17 @@ const Card = ({ CompanyData }: { CompanyData: Company }) => {
     queryFn: () => getCompanyTags(CompanyData.id),
   });
 
-  if (isLoading)
-    return (
-      <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-        Loading...
-      </div>
-    );
+  if (isLoading) {
+    return <CardSkeleton />;
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-        Error: {error.message}
+        <p className="text-red-500">Error: {(error as Error).message}</p>
       </div>
     );
+  }
 
   return (
     <div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] relative">
