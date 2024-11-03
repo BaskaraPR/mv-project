@@ -6,13 +6,20 @@ import NoImg from "@/../public/noimage.jpg";
 import Image from "next/image";
 export default function CompanyForm({
 	submitAction,
+	updateData,
 }: {
 	submitAction: (formData: FormData) => void;
+	updateData?: {
+		company_name: string;
+		company_website: string;
+		description: string;
+		company_image: string;
+	};
 }) {
 	const { data } = useSession();
-	const [name, setName] = useState("");
-	const [website, setWebsite] = useState("");
-	const [description, setDescription] = useState("");
+	const [name, setName] = useState(updateData?.company_name ?? "");
+	const [website, setWebsite] = useState(updateData?.company_website ?? "");
+	const [description, setDescription] = useState(updateData?.description ?? "");
 	const [file, setFile] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -38,16 +45,20 @@ export default function CompanyForm({
 		formData.append("company_website", website);
 		formData.append("description", description);
 		formData.append("contact_person", data?.user?.id ?? "");
-		if (file) formData.append("image", file);
-		if (submitAction) {
-			console.log("submitting");
-			submitAction(formData);
+		if (file) {
+			formData.append("image", file);
+			if (updateData?.company_image) {
+				formData.append("old_image_id", updateData.company_image);
+			}
 		}
+		submitAction(formData);
 	};
 
 	return (
 		<form className="flex flex-col" onSubmit={handleSubmit}>
-			<span className="font-bold text-2xl my-4">Register Your Company</span>
+			<span className="font-bold text-2xl my-4">
+				{updateData ? "Update Company" : "Register Your Company"}
+			</span>
 			<div className="flex flex-row flex-wrap gap-8">
 				<div>
 					<div className="w-96 h-96 rounded-lg overflow-hidden">
@@ -55,6 +66,14 @@ export default function CompanyForm({
 							<Image
 								src={imagePreview}
 								alt="preview"
+								width={400}
+								height={400}
+								className="w-full h-full object-cover"
+							/>
+						) : updateData?.company_image ? (
+							<Image
+								src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${updateData.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
+								alt={updateData.company_name}
 								width={400}
 								height={400}
 								className="w-full h-full object-cover"

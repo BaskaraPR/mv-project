@@ -1,6 +1,8 @@
 import { nextGetServerSession } from "@/lib/next-auth";
 import { getUserCompany } from "../services/user";
 import { redirect } from "next/navigation";
+import Navbar from "../(main)/components/navbar";
+import CompanyInfoSection from "./components/CompanyInfoSection";
 
 export default async function page() {
 	const session = await nextGetServerSession();
@@ -11,5 +13,12 @@ export default async function page() {
 		}
 	}
 
-	return <div></div>;
+	return (
+		<div>
+			<Navbar />
+			<div className="mx-auto max-w-[1169px] px-5">
+				<CompanyInfoSection idUser={session!.user!.id} />
+			</div>
+		</div>
+	);
 }

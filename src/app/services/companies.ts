@@ -1,7 +1,8 @@
 "use server";
 import axios from "axios";
 import { axiosConfig } from "../helper/token";
-import { uploadImage } from "./imageUpload";
+import { uploadImage, deleteImage } from "./imageUpload";
+
 export const getCompanies = async (dataPerPage: number, page: number) => {
 	try {
 		const limit = dataPerPage;
@@ -69,6 +70,44 @@ export const createCompany = async (formData: FormData) => {
 		return {
 			success: false,
 			message: `error creating company ${error}`,
+		};
+	}
+};
+
+export const updateCompany = async ({
+	formData,
+	idCompany,
+}: {
+	formData: FormData;
+	idCompany: string;
+}) => {
+	try {
+		let imageId = null;
+		if (formData.get("old_image_id")) {
+			//@ts-expect-error image
+			const isImageDeleted = await deleteImage(formData.get("old_image_id"));
+			if (isImageDeleted) {
+				//@ts-expect-error image
+				imageId = await uploadImage(formData.get("image"));
+			}
+		}
+		const updateURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations/${idCompany}`;
+		const response = await axios.patch(
+			updateURL,
+			{
+				company_name: formData.get("company_name"),
+				company_website: formData.get("company_website"),
+				contact_person: formData.get("contact_person"),
+				description: formData.get("description"),
+				...(imageId ? { company_image: imageId.id } : {}),
+			},
+			axiosConfig
+		);
+		return response.data.data;
+	} catch (error) {
+		return {
+			success: false,
+			message: `error updating company: ${error}`,
 		};
 	}
 };
