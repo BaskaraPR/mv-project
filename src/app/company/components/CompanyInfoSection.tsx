@@ -1,10 +1,17 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUserCompany } from "@/app/services/user";
 import { getCompanyTags } from "@/app/services/companies";
+import AddTagsModal from "./AddTagsModal";
+import { createTags, deleteTag } from "@/app/services/tags";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { X } from "lucide-react";
+
 export default function CompanyInfoSection({ idUser }: { idUser: string }) {
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const queryClient = useQueryClient();
 	const {
 		data: company,
 		isLoading,
@@ -17,8 +24,42 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 	const { data: tags } = useQuery({
 		queryKey: ["company_tags", company?.id],
 		queryFn: () => getCompanyTags(company.id!),
-		enabled: !!company?.id,
 	});
+
+	const mutation = useMutation({
+		mutationFn: createTags,
+		mutationKey: ["edit_tags_field"],
+		onSuccess: (data) => {
+			console.log("tags updated successfully:", data);
+			queryClient.invalidateQueries({
+				queryKey: ["company_tags", company?.id],
+			});
+		},
+		onError: (error) => {
+			console.error("Error posting new tag:", error);
+		},
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: deleteTag,
+		onSuccess: (data) => {
+			console.log("tag deleted successfully:", data);
+			queryClient.invalidateQueries({
+				queryKey: ["company_tags", company?.id],
+			});
+		},
+		onError: (error) => {
+			console.error("Error deleting tag:", error);
+		},
+	});
+
+	const handleCreateTags = async (tagData: string) => {
+		mutation.mutate({ tag: tagData, idCompany: company.id });
+	};
+
+	const handleDeleteTag = async (tagId: string) => {
+		deleteMutation.mutate(tagId);
+	};
 
 	if (isLoading)
 		return (
@@ -36,6 +77,13 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 
 	return (
 		<div className="w-full flex justify-center">
+			{isModalOpen && (
+				<AddTagsModal
+					setIsModalOpen={setIsModalOpen}
+					submitTag={handleCreateTags}
+				/>
+			)}
+
 			<div className="flex justify-between max-h-400 bg-white w-full  rounded-xl shadow-2xl mt-32 p-8">
 				<div className="flex flex-row space-x-10">
 					<div className="h-40 w-40">
@@ -57,13 +105,19 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 							<span className="mt-2 text-wrap">{company.description}</span>
 						</div>
 						{tags && tags.length > 0 ? (
-							<div className="flex flex-wrap justify-center gap-2 mt-2">
+							<div className="flex gap-2">
 								{tags.map((tag) => (
 									<span
 										key={tag.id}
-										className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
+										className="inline-flex items-center gap-1 px-3 py-1 bg-gray-300 text-gray-800 rounded-full text-sm font-medium transition-colors hover:bg-gray-200"
 									>
 										{tag.tags}
+										<button
+											className="p-1 rounded-full hover:bg-gray-300 transition-colors"
+											onClick={() => handleDeleteTag(tag.id)}
+										>
+											<X size={14} />
+										</button>
 									</span>
 								))}
 							</div>
@@ -79,7 +133,10 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 				<div className="flex flex-col justify-between ">
 					<span className="text-right">{company.company_website}</span>
 					<div className="flex flex-row gap-4">
-						<button className="bg-purple-600 text-white px-6 py-2 hover:bg-purple-700 hover:scale-105 shadow-sm rounded-full">
+						<button
+							className="bg-purple-600 text-white px-6 py-2 hover:bg-purple-700 hover:scale-105 shadow-sm rounded-full"
+							onClick={() => setIsModalOpen(true)}
+						>
 							Add Tags
 						</button>
 						<Link
