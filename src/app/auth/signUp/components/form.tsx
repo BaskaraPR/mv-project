@@ -8,12 +8,14 @@ import { registerUser, findUserByEmail } from "@/app/services/user";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 type RegisterUserData = {
   username: string;
   email: string;
   password: string;
 };
+
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -26,9 +28,12 @@ export default function SignupForm() {
     mutationKey: ["registerUser"],
     onSuccess: (data) => {
       console.log("User registered successfully:", data);
+      toast.success("Your account has been created. Please log in.");
+      router.push("/");
     },
     onError: (error) => {
       console.error("Error registering user:", error);
+      toast.error("An error occurred while creating your account. Please try again.");
     },
   });
 
@@ -36,11 +41,11 @@ export default function SignupForm() {
     e.preventDefault();
     const doesUserExist = await findUserByEmail(email);
     if (doesUserExist) {
-      return alert("User already exists");
+      toast.error("A user with this email already exists.");
+      return;
     }
     const userData: RegisterUserData = { username, email, password };
     mutation.mutate(userData);
-    router.push("/login");
   };
 
   const togglePasswordVisibility = () => {

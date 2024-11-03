@@ -3,6 +3,7 @@ import Providers from "@/redux/Provider";
 import { store } from "../redux/store";
 import ReactQueryProvider from "@/lib/react-query/ReactQueryProvider";
 import { NextAuthProvider } from "./(main)/components/NextAuthProvider";
+import { Toaster } from 'react-hot-toast';
 
 import "./globals.css";
 
@@ -36,6 +37,10 @@ export default function RootLayout({
 				<NextAuthProvider>
 					<Providers store={store}>
 						<ReactQueryProvider>{children}</ReactQueryProvider>
+						<Toaster
+						position="top-center"
+						reverseOrder={false}
+						/>
 					</Providers>
 				</NextAuthProvider>
 			</body>

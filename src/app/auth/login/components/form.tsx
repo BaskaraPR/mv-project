@@ -6,11 +6,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { MdOutlineArrowOutward } from "react-icons/md";
+import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const router = useRouter();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -20,12 +23,15 @@ export default function LoginForm() {
 				password,
 				redirect: false,
 			});
-			console.log(result);
-			if (!result?.error) {
-				window.location.reload();
+			if (result?.error) {
+				toast.error("Invalid email or password.");
+			} else {
+				toast.success("Login successful!");
+				router.push("/");
 			}
 		} catch (error) {
 			console.log("Error logging in: " + (error as Error).message);
+			toast.error("An unexpected error occurred. Please try again.");
 		}
 	};
 
