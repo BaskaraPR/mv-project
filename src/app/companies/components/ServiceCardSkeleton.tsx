@@ -1,14 +1,20 @@
-import React from 'react';
+"use client";
+import React from "react";
 
 interface ServiceCardSkeletonProps {
   count?: number;
 }
 
-const ServiceCardSkeleton: React.FC<ServiceCardSkeletonProps> = ({ count = 1 }) => {
+const ServiceCardSkeleton: React.FC<ServiceCardSkeletonProps> = ({
+  count = 1,
+}) => {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] mb-6 animate-pulse">
+        <div
+          key={index}
+          className="bg-white p-6 rounded-[30px] shadow-sm w-[341px] h-[393px] mb-6 animate-pulse"
+        >
           <div className="flex flex-col items-center gap-4 h-full">
             <div className="w-24 h-24 bg-gray-200 rounded-lg" />
             <div className="text-center w-full">
