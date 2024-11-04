@@ -1,139 +1,158 @@
 "use client";
 
-import { Link2, MoreVertical, Paperclip, Send, Trash2, X } from "lucide-react";
+import { Send, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { createProject } from "@/app/services/history";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface ModalProp {
   onClose: () => void;
   cp: string;
+  userPP: string;
 }
 
-export default function RequestModal({ onClose, cp }: ModalProp) {
-  const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const clearMessages = () => {
-    setSubject("");
-    setMessage("");
+type CreateProject = {
+  company_id: string;
+  user_id: string;
+  project_name: string;
+  project_detail: string;
+  start_date: Date;
+  completed_date: Date;
+  project_price: number;
+};
+
+export default function RequestModal({ onClose, cp, userPP }: ModalProp) {
+  const [projectName, setProjectName] = useState("");
+  const [projectDetail, setProjectDetail] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [completedDate, setCompletedDate] = useState("");
+  const [projectPrice, setProjectPrice] = useState("");
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: createProject,
+    mutationKey: ["createProject"],
+    onSuccess: (data) => {
+      console.log("Request Sent:", data);
+      toast.success("Your project has been created successfully.");
+      router.push("/history");
+    },
+    onError: (error) => {
+      console.error("Error creating project:", error);
+      toast.error("An error occurred. Please try again.");
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const requestData: CreateProject = {
+      company_id: cp,
+      user_id: userPP,
+      project_name: projectName,
+      project_detail: projectDetail,
+      project_price: parseFloat(projectPrice),
+      start_date: new Date(startDate),
+      completed_date: new Date(completedDate),
+    };
+    mutation.mutate(requestData);
   };
 
-  console.log(cp);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative max-w-2xl w-full mx-4 bg-white rounded-3xl shadow-lg p-8 transform transition-all duration-300 ease-out">
-        <div className="flex items-center  justify-between mb-8">
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <button className="ml-auto p-2 text-violet-500 hover:bg-violet-50 rounded-full">
-            <Send className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Email</label>
-          <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@example.com"
-              className="flex-1 bg-transparent outline-none"
-            />
-            {email && (
-              <button
-                onClick={() => setEmail("")}
-                className="ml-2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Company CP</label>
-          <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2">
-            <p className="text-sm text-gray-800">{cp}</p>
-          </div>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Subject</label>
-          <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2">
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="flex-1 bg-transparent outline-none"
-            />
-            {subject && (
-              <button
-                onClick={() => setSubject("")}
-                className="ml-2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
-            <button className="p-1.5 hover:bg-white rounded">
-              <i className="font-serif italic">i</i>
-            </button>
-            <button className="p-1.5 hover:bg-white rounded font-bold">
-              B
-            </button>
-            <button className="p-1.5 hover:bg-white rounded underline">
-              U
-            </button>
-            <button className="p-1.5 hover:bg-white rounded">
-              <Link2 className="w-4 h-4" />
-            </button>
-            <div className="h-5 w-px bg-gray-300 mx-1" />
-            <button className="p-1.5 hover:bg-white rounded">≡</button>
-            <button className="p-1.5 hover:bg-white rounded">≣</button>
-            <button className="p-1.5 hover:bg-white rounded">☰</button>
-            <button className="p-1.5 hover:bg-white rounded">≡</button>
-          </div>
-
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter your message here..."
-            className="w-full h-48 px-3 py-2 bg-gray-50 rounded-lg outline-none resize-none"
-          />
-        </div>
-
-        <div className="flex items-center pt-4">
-          <div className="flex gap-2">
+        <form onSubmit={handleSubmit}>
+          <div className="flex items-center justify-between mb-8">
             <button
-              onClick={clearMessages}
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <button
+              type="submit"
+              className="ml-auto p-2 text-violet-500 hover:bg-violet-50 rounded-full"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Project Name</label>
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg px-3 py-2 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Project Detail</label>
+              <textarea
+                value={projectDetail}
+                onChange={(e) => setProjectDetail(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg px-3 py-2 outline-none resize-none"
+                rows={4}
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg px-3 py-2 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Completed Date</label>
+              <input
+                type="date"
+                value={completedDate}
+                onChange={(e) => setCompletedDate(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg px-3 py-2 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-sm font-medium">Project Price</label>
+              <input
+                type="number"
+                value={projectPrice}
+                onChange={(e) => setProjectPrice(e.target.value)}
+                className="w-full bg-gray-50 rounded-lg px-3 py-2 outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center pt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setProjectName("");
+                setProjectDetail("");
+                setStartDate("");
+                setCompletedDate("");
+                setProjectPrice("");
+              }}
               className="p-2 text-red-500 hover:bg-red-50 rounded-full"
-              aria-label="Clear messages"
+              aria-label="Clear fields"
             >
               <Trash2 className="w-5 h-5" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <Paperclip className="w-5 h-5" />
-            </button>
-
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <Link2 className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <MoreVertical className="w-5 h-5" />
+            <button
+              type="submit"
+              className="ml-auto px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
+            >
+              Submit Project
             </button>
           </div>
-          <button className="ml-auto px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600">
-            Send Message
-          </button>
-        </div>
+        </form>
       </div>
     </div>
   );
