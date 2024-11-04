@@ -20,7 +20,29 @@ export const getCompanies = async (dataPerPage: number, page: number) => {
 
 		return response.data.data;
 	} catch (error) {
-		throw new Error(`Error fetching data from Directus: ${error}`);
+		return {
+			success: false,
+			message: `error to fetch company ${error}`,
+		};
+	}
+};
+
+export const findCompanies = async (
+	dataPerPage: number,
+	page: number,
+	keyword: string
+) => {
+	try {
+		const response = await axios.get(
+			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations?limit=${dataPerPage}&page=${page}&filter[_and][0][company_name][_contains]=${keyword}`,
+			axiosConfig
+		);
+		return response.data.data;
+	} catch (error) {
+		return {
+			success: false,
+			message: `error to find company ${error}`,
+		};
 	}
 };
 

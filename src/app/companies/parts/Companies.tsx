@@ -2,22 +2,33 @@
 import React from "react";
 import Card from "../components/Card";
 import { useQuery } from "@tanstack/react-query";
-import { getCompanies } from "@/app/services/companies";
+import { getCompanies, findCompanies } from "@/app/services/companies";
 import { Company } from "@/app/types/companies";
 import { Button } from "@/app/(main)/components/button";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useEffect } from "react";
 import Link from "next/link";
-export default function FindCompanies() {
-	const { data, isLoading, error } = useQuery({
+export default function FindCompanies({ search }: { search?: string }) {
+	const fetchCompanies = search
+		? () => findCompanies(10, 1, search)
+		: () => getCompanies(10, 1);
+
+	const { data, isLoading, error, refetch } = useQuery({
 		queryKey: ["company_data"],
-		queryFn: () => getCompanies(10, 1),
+		queryFn: fetchCompanies,
+		enabled: Boolean(search !== undefined),
 	});
 
-	if (isLoading) return (
-		<div className="flex justify-center items-center h-screen">
-		  <LoadingSpinner size="large" />
-		</div>
-	  );
+	useEffect(() => {
+		refetch();
+	}, [search, refetch]);
+
+	if (isLoading)
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<LoadingSpinner size="large" />
+			</div>
+		);
 	if (error) return <p>Error: {error.message}</p>;
 
 	return (
@@ -34,9 +45,9 @@ export default function FindCompanies() {
 						))}
 				</div>
 				<Link href="/companies/explore">
-				<div className="text-center pt-9">
-				<Button variant="primary">Find More</Button>
-				</div>
+					<div className="text-center pt-9">
+						<Button variant="primary">Find More</Button>
+					</div>
 				</Link>
 			</div>
 		</section>
