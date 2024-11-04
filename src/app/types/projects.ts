@@ -7,8 +7,7 @@ export interface History {
   project_detail: string;
   start_date: Date;
   completed_date: Date;
-  project_price: BigInteger;
-  project_status: ProjectStatus;
+  project_price: number;
 }
 
 export enum ProjectStatus {
