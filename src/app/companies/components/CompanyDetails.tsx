@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { findCompaniesById } from "@/app/services/companies";
-import { findUserById } from "@/app/services/user";
 import Image from "next/image";
 import {
   Star,
@@ -18,18 +17,21 @@ import { Button } from "../../(main)/components/button";
 import RequestModal from "./RequestModal";
 import { Company } from "@/app/types/companies";
 
-const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Company, cpId: string }) => {
+const CompanyDetails = ({
+  initialCompanyData,
+  cpId,
+  userPP,
+}: {
+  initialCompanyData: Company;
+  cpId: string;
+  userPP: string;
+}) => {
   const [isReq, setIsReq] = useState(false);
 
   const { data: selectedCompany } = useQuery({
     queryKey: ["company_detail", initialCompanyData.id],
     queryFn: () => findCompaniesById(initialCompanyData.id),
     initialData: initialCompanyData,
-  });
-
-  const { data: cpData } = useQuery({
-    queryKey: ["contact_person", cpId],
-    queryFn: () => findUserById(cpId),
   });
 
   const handleIsReq = () => {
@@ -41,10 +43,8 @@ const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Comp
       {isReq && (
         <RequestModal
           onClose={() => setIsReq(false)}
-          cp={
-            cpData?.email ||
-            "Contact Person is either dead or just nonexistent"
-          }
+          cp={cpId}
+          userPP={userPP}
         />
       )}
       {/* Company Header */}
@@ -91,9 +91,7 @@ const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Comp
 
       {/* What's Included Section */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold mb-4">
-          What&apos;s Included
-        </h3>
+        <h3 className="text-lg font-semibold mb-4">What&apos;s Included</h3>
         <div className="grid grid-cols-2 gap-3">
           {[
             "2 concepts included",
@@ -154,9 +152,9 @@ const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Comp
           </div>
           <p className="text-gray-600 text-sm">
             The final logo design lacked creativity and fell short of my
-            expectations, mainly due to a weak understanding of my needs
-            and a minimal level of effort. While everything came
-            together in the end, I expected more from this provider.
+            expectations, mainly due to a weak understanding of my needs and a
+            minimal level of effort. While everything came together in the end,
+            I expected more from this provider.
           </p>
         </div>
       </div>
@@ -168,7 +166,7 @@ const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Comp
           <Image
             src={
               selectedCompany.company_image
-                ?   `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${selectedCompany.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`
+                ? `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${selectedCompany.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`
                 : "/placeholder.svg?height=64&width=64"
             }
             alt={selectedCompany.company_name}
@@ -177,12 +175,8 @@ const CompanyDetails = ({ initialCompanyData, cpId }: { initialCompanyData: Comp
             className="rounded-lg"
           />
           <div>
-            <h4 className="font-semibold">
-              {selectedCompany.company_name}
-            </h4>
-            <p className="text-gray-600">
-              {selectedCompany.company_subtitle}
-            </p>
+            <h4 className="font-semibold">{selectedCompany.company_name}</h4>
+            <p className="text-gray-600">{selectedCompany.company_subtitle}</p>
           </div>
         </div>
         <div className="flex gap-4 mb-4">
