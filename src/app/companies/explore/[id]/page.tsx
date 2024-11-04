@@ -3,7 +3,7 @@ import { getCompanies, findCompaniesById } from "@/app/services/companies";
 import ServiceCardList from "../../components/ServiceCardList";
 import CompanyDetails from "../../components/CompanyDetails";
 import CompanyDetailsSkeleton from "../../components/CompanyDetailsSkeleton";
-import ServiceCardSkeleton from "../../components/ServiceCard";
+import ServiceCard from "../../components/ServiceCard";
 import { nextGetServerSession } from "@/lib/next-auth";
 
 export default async function ExplorePage({
@@ -30,7 +30,7 @@ export default async function ExplorePage({
               fallback={
                 <div className="space-y-6">
                   {[...Array(5)].map((_, index) => (
-                    <ServiceCardSkeleton key={index} />
+                    <ServiceCard key={index} />
                   ))}
                 </div>
               }
@@ -62,3 +62,4 @@ export default async function ExplorePage({
     );
   }
 }
+
