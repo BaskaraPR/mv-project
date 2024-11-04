@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import ServiceCard from "./ServiceCard"; // Adjust path if needed
 import { Company } from "@/app/types/companies";
