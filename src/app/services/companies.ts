@@ -5,17 +5,9 @@ import { uploadImage, deleteImage } from "./imageUpload";
 
 export const getCompanies = async (dataPerPage: number, page: number) => {
 	try {
-		const limit = dataPerPage;
-		const offset = (page - 1) * dataPerPage;
 		const response = await axios.get(
-			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations`,
-			{
-				...axiosConfig,
-				params: {
-					limit,
-					offset,
-				},
-			}
+			`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/corporations?limit=${dataPerPage}&page=${page}`,
+			axiosConfig
 		);
 
 		return response.data.data;
