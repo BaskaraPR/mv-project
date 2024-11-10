@@ -1,5 +1,6 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { getUserCompany } from "@/app/services/user";
 import { getCompanyTags } from "@/app/services/companies";
 import AddTagsModal from "./AddTagsModal";
@@ -21,7 +22,7 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 		queryFn: () => getUserCompany(idUser),
 	});
 
-	const { data: tags } = useQuery({
+	const { data: tags, isLoading: tagloading } = useQuery({
 		queryKey: ["company_tags", company?.id],
 		queryFn: () => getCompanyTags(company.id!),
 	});
@@ -61,19 +62,14 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 		deleteMutation.mutate(tagId);
 	};
 
-	if (isLoading)
+	if (isLoading || tagloading)
 		return (
-			<div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-				Loading...
+			<div className="flex justify-center items-center h-screen">
+				<LoadingSpinner size="large" />
 			</div>
 		);
 
-	if (error)
-		return (
-			<div className="bg-white p-6 rounded-[30px] shadow-sm w-[301px] h-[393px] flex items-center justify-center">
-				Error: {error.message}
-			</div>
-		);
+	if (error) return <p>Error: {error.message}</p>;
 
 	return (
 		<div className="w-full flex justify-center">
