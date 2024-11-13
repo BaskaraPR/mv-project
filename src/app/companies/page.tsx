@@ -12,7 +12,7 @@ export default function Home({
 			<div className="mx-auto max-w-[1169px] px-5">
 				<Hero />
 				<Companies search={searchParams.keyword} />
-				<Services />
+				{/* <Services /> */}
 				<CategoriesList />
 			</div>
 		</div>
