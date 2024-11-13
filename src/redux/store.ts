@@ -1,8 +1,11 @@
 "use client";
 import { configureStore } from "@reduxjs/toolkit";
+import projectReducer from "./slices/projects";
 
 export const store = configureStore({
-	reducer: {},
+	reducer: {
+		activeProjectOption: projectReducer,
+	},
 });
 
 export type RootState = ReturnType<typeof store.getState>;

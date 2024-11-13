@@ -3,7 +3,6 @@ import axios from "axios";
 import { axiosConfig } from "../helper/token";
 import { revalidatePath } from "next/cache";
 import { History } from "../types/projects";
-
 export const getUserProjects = async (userId: string) => {
 	try {
 		const response = await axios.get(
@@ -16,9 +15,15 @@ export const getUserProjects = async (userId: string) => {
 	}
 };
 
-export const getCompanyPendingProjects = async (companyId: string) => {
+export const getCompanyByStatus = async ({
+	companyId,
+	status,
+}: {
+	companyId: string;
+	status: string;
+}) => {
 	try {
-		const GETURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/projects?filter[company_id][_eq]=${companyId}&filter[project_status][_eq]=pending`;
+		const GETURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/projects?filter[company_id][_eq]=${companyId}&filter[project_status][_eq]=${status}`;
 		const response = await axios.get(GETURL, axiosConfig);
 		return response.data.data;
 	} catch (error) {
@@ -26,6 +31,26 @@ export const getCompanyPendingProjects = async (companyId: string) => {
 	}
 };
 
+export const getCompanyByMultipleStatus = async ({
+	companyId,
+	status,
+}: {
+	companyId: string;
+	status: string | string[];
+}) => {
+	try {
+		const statusFilter = Array.isArray(status)
+			? status
+					.map((s, index) => `filter[project_status][_in][${index}]=${s}`)
+					.join("&")
+			: `filter[project_status][_eq]=${status}`;
+		const GETURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/projects?filter[company_id][_eq]=${companyId}&${statusFilter}`;
+		const response = await axios.get(GETURL, axiosConfig);
+		return response.data.data;
+	} catch (error) {
+		throw new Error(`Error fetching data from Directus: ${error}`);
+	}
+};
 export const createProject = async (data: History) => {
 	try {
 		const postURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/projects`;
@@ -70,6 +95,32 @@ export const projectAction = async ({
 		return {
 			success: true,
 			message: `updating project status success`,
+			data: result.data.data,
+		};
+	} catch (error) {
+		throw new Error(`Error updating data from Directus: ${error}`);
+	}
+};
+
+export const sendResult = async ({
+	projectId,
+	resultlink,
+}: {
+	projectId: string;
+	resultlink: string;
+}) => {
+	try {
+		const patchURL = `${process.env.NEXT_PUBLIC_DIRECTUS_URL}/items/projects/${projectId}`;
+		console.log(patchURL);
+		const result = await axios.patch(
+			patchURL,
+			{ project_result: resultlink, project_status: "finished" },
+			axiosConfig
+		);
+		revalidatePath("/", "layout");
+		return {
+			success: true,
+			message: `sending result success`,
 			data: result.data.data,
 		};
 	} catch (error) {

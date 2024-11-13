@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { getUserCompany } from "@/app/services/user";
 import { getCompanyTags } from "@/app/services/companies";
-import AddTagsModal from "./AddTagsModal";
+import FormModal from "./FormModal";
 import { createTags, deleteTag } from "@/app/services/tags";
 import { useState } from "react";
 import Link from "next/link";
@@ -74,9 +74,11 @@ export default function CompanyInfoSection({ idUser }: { idUser: string }) {
 	return (
 		<div className="w-full flex justify-center">
 			{isModalOpen && (
-				<AddTagsModal
+				<FormModal
 					setIsModalOpen={setIsModalOpen}
-					submitTag={handleCreateTags}
+					submitAction={handleCreateTags}
+					label="New Tag"
+					button="Add Tag"
 				/>
 			)}
 

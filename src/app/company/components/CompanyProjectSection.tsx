@@ -1,6 +1,6 @@
 "use client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCompanyPendingProjects } from "@/app/services/projects";
+import { getCompanyByStatus } from "@/app/services/projects";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { X, Check } from "lucide-react";
 import { projectAction } from "@/app/services/projects";
@@ -12,7 +12,8 @@ export default function CompanyProjectSection({
 	const queryClient = useQueryClient();
 	const { data, isLoading } = useQuery({
 		queryKey: ["company", idCompany, "pending_projects"],
-		queryFn: () => getCompanyPendingProjects(idCompany),
+		queryFn: () =>
+			getCompanyByStatus({ companyId: idCompany, status: "pending" }),
 	});
 
 	const mutation = useMutation({
@@ -37,7 +38,7 @@ export default function CompanyProjectSection({
 		);
 
 	const handleAcceptProject = async (projectId: string) => {
-		mutation.mutate({ projectId: projectId, status: "accepted" });
+		mutation.mutate({ projectId: projectId, status: "progress" });
 	};
 
 	const handleRejectProject = async (projectId: string) => {
@@ -45,43 +46,51 @@ export default function CompanyProjectSection({
 	};
 
 	return (
-		<div className="w-full flex justify-center flex-col space-y-4 max-h-[800px] overflow-y-auto">
+		<div className="w-full flex justify-center flex-col space-y-4 max-h-[800px] overflow-y-auto pb-4">
 			{data &&
 				data.map((data) => (
-					<div
-						className="flex justify-between bg-white w-full rounded-xl shadow-2xl p-8"
-						key={data.id}
-					>
-						<div className="flex flex-col">
-							<h2 className="max-w-96 break-words text-2xl font-bold text-purple-500">
-								{data.project_name}
-							</h2>
-							<span className="max-w-96 break-words">
-								{data.project_detail}
-							</span>
-							<span className="mt-2">
-								Requested Price:{" "}
-								{new Intl.NumberFormat("id-ID", {
-									style: "currency",
-									currency: "IDR",
-								}).format(data.project_price)}
-							</span>
+					<div key={data.id} className="shadow-xl">
+						<div className="flex justify-between bg-white w-full h-full rounded-xl  p-8">
+							<div className="flex flex-col">
+								<h2 className="max-w-96 break-words text-2xl font-bold text-purple-500">
+									{data.project_name}
+								</h2>
+								<span className="max-w-96 break-words">
+									{data.project_detail}
+								</span>
+								<span className="mt-2">
+									Requested Price:{" "}
+									{new Intl.NumberFormat("id-ID", {
+										style: "currency",
+										currency: "IDR",
+									}).format(data.project_price)}
+								</span>
 
-							<span className="mt-2">User: {data.user_id}</span>
-						</div>
-						<div className="flex flex-row space-x-4 ">
-							<button
-								onClick={() => handleRejectProject(data.id)}
-								className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-red-500 text-red-500 hover:bg-red-100 transition"
-							>
-								<X className="w-10 h-10" />
-							</button>
-							<button
-								onClick={() => handleAcceptProject(data.id)}
-								className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-green-500 text-green-500 hover:bg-green-100 transition"
-							>
-								<Check className="w-10 h-10" />
-							</button>
+								<span className="mt-2">User: {data.user_id}</span>
+								<span className="max-w-96 mt-2">
+									{new Intl.DateTimeFormat("id-ID", {
+										dateStyle: "long",
+									}).format(new Date(data.start_date))}{" "}
+									-{" "}
+									{new Intl.DateTimeFormat("id-ID", {
+										dateStyle: "long",
+									}).format(new Date(data.completed_date))}
+								</span>
+							</div>
+							<div className="flex flex-row space-x-4 ">
+								<button
+									onClick={() => handleRejectProject(data.id)}
+									className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-red-500 text-red-500 hover:bg-red-100 transition"
+								>
+									<X className="w-10 h-10" />
+								</button>
+								<button
+									onClick={() => handleAcceptProject(data.id)}
+									className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-green-500 text-green-500 hover:bg-green-100 transition"
+								>
+									<Check className="w-10 h-10" />
+								</button>
+							</div>
 						</div>
 					</div>
 				))}

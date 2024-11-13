@@ -2,17 +2,21 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 
-export default function AddTagsModal({
+export default function FormModal({
 	setIsModalOpen,
-	submitTag,
+	submitAction,
+	label,
+	button,
 }: {
 	setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-	submitTag: (tag: string) => Promise<void>;
+	submitAction: (tag: string) => Promise<void>;
+	label: string;
+	button: string;
 }) {
-	const [tag, setTag] = useState("");
+	const [value, setValue] = useState("");
 
 	const toggleModal = () => {
-		setTag("");
+		setValue("");
 		setIsModalOpen(false);
 	};
 
@@ -24,16 +28,16 @@ export default function AddTagsModal({
 		}
 	};
 
-	const handleSubmitUpdate = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		toggleModal();
-		await submitTag(tag);
+		await submitAction(value);
 	};
 
 	return (
-		<form onSubmit={handleSubmitUpdate}>
+		<form onSubmit={handleSubmit} className="absolute">
 			<div
-				className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+				className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 "
 				onClick={handleOverlayClick}
 			>
 				<div className="bg-white rounded-lg shadow-xl max-w-lg w-full relative overflow-hidden transform transition-all duration-300 ease-in-out">
@@ -51,14 +55,13 @@ export default function AddTagsModal({
 									htmlFor="nama-user"
 									className="block text-sm font-medium text-secondary"
 								>
-									New Tag
+									{label}
 								</label>
 								<input
 									type="text"
 									id="nama-user"
-									value={tag}
-									placeholder="Tag Name"
-									onChange={(e) => setTag(e.target.value)}
+									value={value}
+									onChange={(e) => setValue(e.target.value)}
 									required
 									className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
 								/>
@@ -70,7 +73,7 @@ export default function AddTagsModal({
 								type="submit"
 								className="w-full text-white bg-purple-500 font-bold py-2 px-4 rounded-lg"
 							>
-								Add Tag
+								{button}
 							</button>
 						</div>
 					</div>
