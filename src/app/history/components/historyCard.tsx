@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getUserProjects } from "@/app/services/projects";
+import { getCompanyTags } from "@/app/services/companies";
 import { History, ProjectStatus } from "@/app/types/projects";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Image from "next/image";
