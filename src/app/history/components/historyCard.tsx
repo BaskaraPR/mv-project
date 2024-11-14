@@ -3,71 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserProjects } from "@/app/services/projects";
 import { History, ProjectStatus } from "@/app/types/projects";
-
+import LoadingSpinner from "@/components/LoadingSpinner";
+import Image from "next/image";
 type HistoryCardProps = {
 	id: string;
 };
 
-const statusRank = {
-	[ProjectStatus.Pending]: 0,
-	[ProjectStatus.Progress]: 1,
-	[ProjectStatus.Finished]: 2,
-};
-
-const getProgressColor = (status: ProjectStatus) => {
-	switch (status) {
-		case ProjectStatus.Pending:
-			return "bg-yellow-500";
-		case ProjectStatus.Progress:
-			return "bg-blue-500";
-		case ProjectStatus.Finished:
-			return "bg-green-500";
-		default:
-			return "bg-gray-200";
-	}
-};
-
-const ProjectCard = ({ project }: { project: History }) => {
-	const progressColor = getProgressColor(project.project_status);
-	const statusLevel = statusRank[project.project_status];
-
-	return (
-		<div className="bg-white border rounded-lg shadow-sm p-6 mb-4 max-w-xl">
-			<div className="mb-4">
-				<h3 className="font-medium text-lg truncate">{project.project_name}</h3>
-				<p className="text-sm text-gray-500 truncate">
-					{project.project_detail}
-				</p>
-			</div>
-
-			<div className="relative flex justify-between items-center mt-4">
-				<div className="absolute left-0 right-0 h-0.5 bg-gray-200">
-					<div
-						className={`absolute left-0 h-full ${progressColor} transition-all duration-500`}
-						style={{ width: `${(statusLevel / 2) * 100}%` }}
-					/>
-				</div>
-
-				{["send", "clock", "file-check"].map((icon, index) => (
-					<div
-						key={icon}
-						className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full ${
-							statusLevel >= index
-								? "bg-purple-600 text-white"
-								: "bg-gray-200 text-gray-400"
-						}`}
-					>
-						{icon === "send" && <SendIcon />}
-						{icon === "clock" && <ClockIcon />}
-						{icon === "file-check" && <CheckIcon />}
-					</div>
-				))}
-			</div>
-		</div>
-	);
-};
-
-// SVG Icon Components
 const SendIcon = () => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -119,13 +60,121 @@ const CheckIcon = () => (
 	</svg>
 );
 
+const ProjectCard = ({ project }: { project: History }) => {
+	return (
+		<div className="bg-white border rounded-lg shadow-2xl p-6 mb-4 max-w-xl min-w-full flex flex-row justify-between">
+			<div className="">
+				<div className="mb-4 space-y-2">
+					<h3 className="font-medium text-lg truncate">
+						{project.project_name}
+					</h3>
+					<p className="text-sm text-gray-500 truncate">
+						{project.project_detail}
+					</p>
+					<h3 className="font-medium text-lg truncate">
+						{new Intl.NumberFormat("id-ID", {
+							style: "currency",
+							currency: "IDR",
+						}).format(project.project_price)}
+					</h3>
+					<span>
+						{new Intl.DateTimeFormat("id-ID", {
+							dateStyle: "long",
+						}).format(new Date(project.start_date))}{" "}
+						-{" "}
+						{new Intl.DateTimeFormat("id-ID", {
+							dateStyle: "long",
+						}).format(new Date(project.completed_date))}
+					</span>
+				</div>
+
+				<div className="relative flex justify-between items-center mt-4 max-w-[500px] flex-wrap">
+					<div className="min-w-[500px]">
+						<div className="relative flex items-center justify-between">
+							<div className="absolute left-0 right-0 h-1 bg-gray-200">
+								<div
+									className="absolute left-0 h-full bg-purple-500 transition-all duration-500"
+									style={{
+										width:
+											project.project_status === ProjectStatus.Pending
+												? "0%"
+												: project.project_status === ProjectStatus.Progress
+												? "50%"
+												: "100%",
+									}}
+								/>
+							</div>
+							<div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white z-10">
+								<SendIcon />
+							</div>
+							<div
+								className={`w-10 h-10 rounded-full ${
+									project.project_status !== ProjectStatus.Pending
+										? "bg-purple-500 text-white"
+										: "bg-gray-200 text-gray-400"
+								} flex items-center justify-center z-10`}
+							>
+								<ClockIcon />
+							</div>
+							<div
+								className={`w-10 h-10 rounded-full ${
+									project.project_status === ProjectStatus.Finished
+										? "bg-purple-500 text-white"
+										: "bg-gray-200 text-gray-400"
+								} flex items-center justify-center z-10`}
+							>
+								<CheckIcon />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div className="flex space-x-4 mt-4">
+					<div
+						className={`${
+							project.project_status === "cancelled"
+								? "bg-red-500"
+								: "bg-green-600"
+						} text-center text-white px-6 py-2 shadow-sm rounded-full`}
+					>
+						Project {project.project_status}
+					</div>
+				</div>
+			</div>
+			<div className="px-4 flex flex-row gap-4">
+				<div className="flex flex-col">
+					<span className="font-light text-right">{project.company_id.id}</span>
+					<h3 className="text-lg font-bold text-right">
+						{project.company_id.company_name}
+					</h3>
+					<span className="font-light text-right">
+						{project.company_id.company_website}
+					</span>
+				</div>
+				<div className="h-40 w-40 ">
+					{project.company_id.company_image ? (
+						<Image
+							src={`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/assets/${project.company_id.company_image}?access_token=${process.env.NEXT_PUBLIC_DIRECTUS_TOKEN}`}
+							alt={project.company_id.company_name}
+							width={400}
+							height={400}
+							className="rounded-lg object-cover w-full h-full"
+						/>
+					) : (
+						<div className="bg-gray-200 w-24 h-24 rounded-lg animate-pulse" />
+					)}
+				</div>
+			</div>
+		</div>
+	);
+};
+
 export default function HistoryCard({ id }: HistoryCardProps) {
 	const { data, isLoading } = useQuery<History[]>({
-		queryKey: ["project_data", id],
+		queryKey: ["project_data_user", id],
 		queryFn: () => getUserProjects(id),
 	});
 
-	if (isLoading) return <p>Loading...</p>;
+	if (isLoading) return <LoadingSpinner />;
 	if (!Array.isArray(data)) return <p>No project data found.</p>;
 
 	return (
